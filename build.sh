@@ -14,16 +14,16 @@ VOXEL_REPO="git@github.com:Zylann/godot_voxel.git"
 
 BUILD_PLATFORM="linuxbsd"
 
-# # Installing dependencies
-# echo "installing git"
-# sudo apt update
-# sudo apt install -y git
+# Installing dependencies
+echo "installing git"
+sudo apt update
+sudo apt install -y git
 
-# echo "Installing .NET SDK..."
-# sudo apt-get install -y dotnet-sdk-8.0
+echo "Installing .NET SDK..."
+sudo apt-get install -y dotnet-sdk-8.0
 
-# echo "Installing c++ dependencies"
-# sudo apt install -y build-essential scons python3
+echo "Installing c++ dependencies"
+sudo apt install -y build-essential scons python3
 
 # Setting up local NuGet source
 if [ ! -d "cool_local_nuget_source" ]; then
@@ -45,34 +45,34 @@ else
     git pull
 fi
 
-# # Set version
-# git checkout "$GODOT_VERSION"
-# git pull
+# Set version
+git checkout "$GODOT_VERSION"
+git pull
 
-# # Going into modules
-# cd "$GODOT_MODULE_DIR"
+# Going into modules
+cd "$GODOT_MODULE_DIR"
 
-# # Getting voxel module source code
-# if [ ! -d "$VOXEL_DIR" ]; then
-#     echo "Voxel tools not found, cloning repo into $VOXEL_DIR"
-#     git clone "$VOXEL_REPO" "$VOXEL_DIR"
-#     cd "$VOXEL_DIR"
-# else
-#     echo "Voxel tools already exists, updating.."
-#     cd "$VOXEL_DIR"
-#     git pull
-# fi
+# Getting voxel module source code
+if [ ! -d "$VOXEL_DIR" ]; then
+    echo "Voxel tools not found, cloning repo into $VOXEL_DIR"
+    git clone "$VOXEL_REPO" "$VOXEL_DIR"
+    cd "$VOXEL_DIR"
+else
+    echo "Voxel tools already exists, updating.."
+    cd "$VOXEL_DIR"
+    git pull
+fi
 
-# # Set voxel version
-# git checkout "$VOXEL_VERSION"
-# git pull
+# Set voxel version
+git checkout "$VOXEL_VERSION"
+git pull
 
-# # Go back to the Godot directory
-# cd .. 
-# cd ..
+# Go back to the Godot directory
+cd .. 
+cd ..
 
-# # Building Godot
-# scons -j$(nproc) platform=linuxbsd mono_glue=no module_mono_enabled=yes
-# bin/godot.linuxbsd.editor.x86_64.mono --headless --generate-mono-glue modules/mono/glue
-# scons -j$(nproc) platform=linuxbsd module_mono_enabled=yes
+# Building Godot
+scons -j$(nproc) platform=linuxbsd mono_glue=no module_mono_enabled=yes
+bin/godot.linuxbsd.editor.x86_64.mono --headless --generate-mono-glue modules/mono/glue
+scons -j$(nproc) platform=linuxbsd module_mono_enabled=yes
 ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --push-nupkgs-local cool_local_nuget_source
